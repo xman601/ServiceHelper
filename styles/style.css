@@ -3,7 +3,7 @@
 
 body {
     font-family: "Poppins", sans-serif;
-    background-color: #f4f4f4;
+    background-color: #005507;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -20,7 +20,7 @@ nav {
     position: sticky;
     grid-area: navbar;
     display: flex;
-    background-color: #003f05;
+    background-color: #005507;
     color: white;
     padding: 20px;
     align-items: center;
@@ -51,7 +51,7 @@ section {
     padding: 20px;
     background-color: white;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px #545454;
 }
 
 * {
@@ -63,7 +63,7 @@ section {
 .wrapper {
     width: 100%;
     max-width: 1200px;
-    height: 700px;
+    height: 650px;
     margin: 1rem auto 0;
     display: flex;
     gap: 1rem;
@@ -100,12 +100,21 @@ section {
     border: none;
     border-radius: 2rem;
     cursor: pointer;
+    font-size: medium;
+}
+
+.btn_toggle {
+    padding: .5rem 1rem;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    cursor: pointer;
 }
 .preview-button {
     background-color: #4e4e4e;
 }
 .copy-button {
-    background-color: #003f05;
+    background-color: #005507;
 }
 
 .output img {
@@ -118,7 +127,7 @@ footer {
     text-align: center;
     font-size: 0.9em;
     padding: 20px;
-    background-color: #003f05;
+    background-color: #005507;
     color: white;
 }
 
@@ -137,4 +146,177 @@ footer a:hover {
   color: #005507;
   padding: 2px 6px;
   border-radius: 3px;
+}
+
+body.dark {
+  background-color: #005507;
+  color: #e0e0e0;
+}
+
+body.dark nav,
+body.dark footer {
+  background-color: #005507;
+  color: #e0e0e0;
+}
+
+body.dark main {
+  background-color: #363f36;
+}
+
+body.dark section {
+  background-color: #363636;
+  color: #e0e0e0;
+  box-shadow: 0 2px 5px #2d2d2d;
+}
+
+body.dark .output,
+body.dark .editor {
+  background-color: #363636;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+body.dark .btn {
+  background-color: #444 !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark .btn_toggle {
+  background-color: #444 !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark .preview-button {
+  background-color: #666 !important;
+}
+
+body.dark .copy-button {
+  background-color: #005507 !important;
+}
+
+body.dark .code-block {
+  background: #222627;
+  color: #59ff67;
+}
+
+body.dark .ql-toolbar.ql-snow {
+  background: #23272a;
+  border-color: #444;
+}
+body.dark .ql-toolbar.ql-snow .ql-picker-label,
+body.dark .ql-toolbar.ql-snow .ql-picker-item,
+body.dark .ql-toolbar.ql-snow button {
+  color: #e0e0e0;
+}
+body.dark .ql-toolbar.ql-snow .ql-picker-label,
+body.dark .ql-toolbar.ql-snow .ql-picker-item {
+  background: #23272a;
+}
+body.dark .ql-toolbar.ql-snow .ql-picker-options {
+  background: #23272a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+body.dark .ql-toolbar.ql-snow button:hover,
+body.dark .ql-toolbar.ql-snow button.ql-active {
+  color: #59ff67;
+}
+body.dark .ql-container.ql-snow {
+  background: #363636;
+  border-color: #444;
+}
+body.dark .ql-editor {
+  background: #363636;
+  color: #e0e0e0;
+}
+body.dark .ql-editor a {
+  color: #59ff67;
+}
+body.dark .ql-snow .ql-stroke {
+  stroke: #e0e0e0;
+}
+body.dark .ql-snow .ql-fill {
+  fill: #e0e0e0;
+}
+body.dark .ql-snow .ql-picker {
+  color: #e0e0e0;
+}
+
+a,
+.output a,
+main a {
+  color: #005507;
+  text-decoration: underline;
+}
+
+a:hover,
+.output a:hover,
+main a:hover {
+  color: #3ad14b;
+}
+
+/* Dark mode: override link color */
+body.dark a,
+body.dark .output a,
+body.dark main a {
+  color: #59ff67;
+}
+
+body.dark a:hover,
+body.dark .output a:hover,
+body.dark main a:hover {
+  color: #3ad14b;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+.toggle-switch label {
+  cursor: pointer;
+  width: 60px;
+  height: 30px;
+  background: #222;
+  display: block;
+  border-radius: 50px;
+  position: relative;
+  transition: background 0.3s;
+}
+.toggle-switch .toggle {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+  z-index: 2;
+}
+.toggle-switch .sun,
+.toggle-switch .moon {
+  position: absolute;
+  top: 7px;
+  width: 16px;
+  height: 16px;
+  z-index: 3;
+}
+.toggle-switch .sun {
+  left: 8px;
+  background: url('data:image/svg+xml;utf8,<svg fill="yellow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><g><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg>') no-repeat center/contain;
+}
+.toggle-switch .moon {
+  right: 8px;
+  background: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 0112.21 3a7 7 0 100 14 9 9 0 008.79-4.21z"/></svg>') no-repeat center/contain;
+}
+.toggle-switch input[type="checkbox"]:checked + label {
+  background: #222;
+}
+.toggle-switch input[type="checkbox"]:checked + label .toggle {
+  left: 32px;
+  background: #0088ff;
 }

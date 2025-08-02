@@ -4,7 +4,8 @@
         <meta charset="UTF-8">
         <title>ServiceNow Helper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon"  type="image/png" href="./assets/favicon.png">
+        <link rel="icon"type="image/png" href="./assets/favicon.png">
+        <link href="styles/qhill.css" rel="stylesheet"/>
         <link rel="stylesheet" href="styles/style.css">
     </head>
     <body>
@@ -12,16 +13,26 @@
             <div id="logo">
                 <a href="index.html" style="text-decoration:none; color:inherit;">
                     <img src="./assets/favicon.png" alt="ServiceNow Helper Logo" style="height:32px;vertical-align:middle;margin-right:10px;">
+                    <h1 style="display:inline;vertical-align:middle;">ServiceNow Helper</h1>
+                </a>
+            </div>
+            <div id="nav-links">
+                <a href="docs.html" style="text-decoration:none; color:inherit;">
                     <h1 style="display:inline;vertical-align:middle;">Docs</h1>
                 </a>
             </div>
+            <div class="toggle-switch" id="theme-toggle" style="margin-left:1rem;">
+              <input type="checkbox" id="switch" />
+              <label for="switch">
+                <span class="toggle"></span>
+                <span class="moon"></span>
+                <span class="sun"></span>
+              </label>
+            </div>
         </nav>
         <main>
-            <section id="Docs">
-                <p>ServiceNow Helper is designed to assist you when writing <b>Comments</b> or <b>Work Notes</b>.</p>
-                <p>This application allows you to write comments with formatting options such as <b>Bold</b>, <i>Italic</i>, <u>Underline</u>, and <a href="#" id="hyperlink">Hyperlinks</a>.</p>
-                <p>To use this tool, simply write your comments in the text area below and click the "Generate Output" button. The formatted output will be displayed for you to copy and paste into ServiceNow.</p>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Amet error fugiat praesentium corporis non nam explicabo facere obcaecati ut deleniti sint cum, sequi ipsum earum dolore aut molestias, harum possimus odio dolor unde! Quas sunt animi provident enim praesentium suscipit cupiditate, fugit magni, ea excepturi delectus unde sequi, saepe eaque placeat. Repudiandae id aliquid, officiis animi, odio odit possimus vel enim numquam laborum quam consequatur nihil et illum quisquam cumque veniam eum error laboriosam dignissimos soluta. At quas ipsa vitae eum omnis nobis, ut inventore iusto dolores facere ipsam dolore nam labore exercitationem delectus minus eaque sit, quasi voluptatum hic? Velit ab iste in sed eveniet similique. Tempora perspiciatis dignissimos nam, laboriosam aliquam aliquid sint delectus, quis voluptates magnam amet suscipit et ut eaque repudiandae cum tenetur autem ea, nemo quisquam quod. Rerum illo sunt, aut laudantium porro minus earum fugiat tempore repellat, voluptatem ipsum architecto mollitia nisi non nihil in vel consectetur. Quas animi blanditiis autem maxime maiores corrupti recusandae, odio consectetur voluptatem! Nemo earum aspernatur atque obcaecati aliquid maiores molestiae, quia nihil, saepe facilis autem dignissimos id! Ea fuga nisi, doloremque suscipit repellat quo provident nihil veniam. Et praesentium est, totam commodi reprehenderit officia harum! Nesciunt, cupiditate? Modi?</p>
+            <section id="instructions">
+                <p>ServiceNow Helper Docs comming soon.</p>
             </section>
             <section id="Disclaimer">
                 <p><b>Disclaimer:</b> This tool is provided as a convenience and is not affiliated with ServiceNow. The creators of this tool are not responsible or liable for any actions, outcomes, or consequences resulting from its use or the outputs it generates. Use at your own risk.</p>
@@ -31,6 +42,7 @@
             <p>&copy; 2025 ServiceNow Helper. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>.</p>
             <p>Contact us on <a href="https://github.com/xman601/ServiceNowHelper" target="_blank">GitHub</a>.</p>
         </footer>
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
         <script src="scripts/app.js"></script>
     </body>
 </html>

@@ -5,19 +5,29 @@
         <title>ServiceNow Helper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon"type="image/png" href="./assets/favicon.png">
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
+        <link href="styles/qhill.css" rel="stylesheet"/>
         <link rel="stylesheet" href="styles/style.css">
     </head>
     <body>
         <nav>
             <div id="logo">
-                <img src="./assets/favicon.png" alt="ServiceNow Helper Logo" style="height:32px;vertical-align:middle;margin-right:10px;">
-                <h1 style="display:inline;vertical-align:middle;">ServiceNow Helper</h1>
+                <a href="index.html" style="text-decoration:none; color:inherit;">
+                    <img src="./assets/favicon.png" alt="ServiceNow Helper Logo" style="height:32px;vertical-align:middle;margin-right:10px;">
+                    <h1 style="display:inline;vertical-align:middle;">ServiceNow Helper</h1>
+                </a>
             </div>
             <div id="nav-links">
                 <a href="docs.html" style="text-decoration:none; color:inherit;">
                     <h1 style="display:inline;vertical-align:middle;">Docs</h1>
                 </a>
+            </div>
+            <div class="toggle-switch" id="theme-toggle" style="margin-left:1rem;">
+              <input type="checkbox" id="switch" />
+              <label for="switch">
+                <span class="toggle"></span>
+                <span class="moon"></span>
+                <span class="sun"></span>
+              </label>
             </div>
         </nav>
         <main>
