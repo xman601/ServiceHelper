@@ -10,6 +10,7 @@ header {
     align-items: center;
     background-color: #003f05;
     color: white;
+    border-radius: 5px;
     padding: 10px;
 }
 
