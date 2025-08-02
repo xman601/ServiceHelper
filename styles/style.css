@@ -84,7 +84,7 @@ section {
     width: 0%;
     max-width: 0%;
     padding: 1rem;
-    
+    overflow: auto; /* Add this line */
 }
 
 .output.active {
