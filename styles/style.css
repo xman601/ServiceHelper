@@ -1,26 +1,50 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+    font-family: "Poppins", sans-serif;
     background-color: #f4f4f4;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+    "navbar"
+    "main"
+    "footer";
+    height: 100vh;
 }
 
-header {
+nav {
+    min-height: 80px;
+    max-height: 80px;
+    top: 8px;
+    position: sticky;
+    grid-area: navbar;
     display: flex;
-    align-items: center;
     background-color: #003f05;
     color: white;
     border-radius: 5px;
     padding: 10px;
+    align-items: center;
+    justify-content: end;
 }
 
-header img {
-    height: 32px;
-    margin-right: 10px;
+#logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    margin-right: auto;
 }
 
-h1 {
-    margin: 0;
+#nav-links {
+    color: white;
+}
+
+main {
+    grid-area: main;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #e9ecef;
 }
 
 section {
@@ -33,7 +57,6 @@ section {
 
 textarea {
     width: 100%;
-    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: vertical;
@@ -53,6 +76,8 @@ button:hover {
 }
 
 footer {
+    bottom: 0;
+    grid-area: footer;
     text-align: center;
     margin-top: 20px;
     font-size: 0.9em;
