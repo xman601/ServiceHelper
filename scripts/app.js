@@ -44,22 +44,10 @@ if (themeSwitch) {
 }
 
 previewBtn.addEventListener("click", () => {
-  let content = quill.root.innerHTML;
-
-  // Wrap headings, bold, italic, underline, and links in [code]...[/code]
-  content = content
-    .replace(/<(h[1-3])[^>]*>(.*?)<\/\1>/gi, '[code]$2[/code]')
-    .replace(/<(b|strong)>(.*?)<\/\1>/gi, '[code]$2[/code]')
-    .replace(/<(i|em)>(.*?)<\/\1>/gi, '[code]$2[/code]')
-    .replace(/<u>(.*?)<\/u>/gi, '[code]$1[/code]')
-    .replace(/<a [^>]+>(.*?)<\/a>/gi, '[code]$1[/code]');
-
-  // Replace [code]...[/code] with <span class="code-block">...</span> for styling, and keep the rest as HTML
-  content = content.replace(/\[code\](.*?)\[\/code\]/g, '<span class="code-block">[code]$1[/code]</span>');
-
+  const content = quill.root.innerHTML;
   output.classList.add("active");
   setTimeout(() => {
-    output.innerHTML = content;
+    output.textContent = `[code]${content}[/code]`;
   }, 10);
 });
 

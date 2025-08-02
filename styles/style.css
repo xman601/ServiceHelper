@@ -252,7 +252,7 @@ main a {
 a:hover,
 .output a:hover,
 main a:hover {
-  color: #3ad14b;
+  color: #014409;
 }
 
 /* Dark mode: override link color */
@@ -319,4 +319,18 @@ body.dark main a:hover {
 .toggle-switch input[type="checkbox"]:checked + label .toggle {
   left: 32px;
   background: #0088ff;
+}
+
+body.dark .ql-tooltip {
+  background: #23272a;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+body.dark .ql-tooltip input {
+  background: #363636;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+body.dark .ql-tooltip a {
+  color: #59ff67;
 }
