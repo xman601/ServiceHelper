@@ -4,6 +4,20 @@
   <img src="assets/favicon.png" alt="ServiceNowHelper logo" width=150 />
 </p>
 
-<p align="center">
-  ServiceNow Helper is designed to help you write Comments and Work Notes for ServiceNow.
-</p>
+## About
+
+ServiceNow Helper is designed to help you write Comments and Work Notes for ServiceNow.
+
+## Usage/Examples
+
+```
+Filler for now
+```
+
+## Author
+
+[Xavier Jimenez](https://github.com/xman601/ServiceNowHelper)
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
