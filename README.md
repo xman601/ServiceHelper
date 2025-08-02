@@ -16,7 +16,7 @@ Filler for now
 
 ## Author
 
-[Xavier Jimenez](https://github.com/xman601/ServiceNowHelper)
+[Xavier Jimenez](https://github.com/xman601)
 
 ## License
 
