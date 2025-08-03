@@ -5,7 +5,8 @@ const themeToggle = document.getElementById("theme-toggle");
 
 const toolbarOptions = [
   //   header options
-  [{ header: [1, 2, 3] }],
+  [{ 'size': ['small', false, 'large', 'huge'] }],
+  [{ header: [1, 2, 3, false] }],
 
   // text utilities
   ["bold", "italic", "underline"],
@@ -14,7 +15,18 @@ const toolbarOptions = [
   [{ list: "ordered" }, { list: "bullet" }],
 
   // media
-  ["link"],
+  ["link"]
+  
+  // toggled buttons
+  ['blockquote', 'code-block'],
+
+  [{ 'script': 'sub'}, { 'script': 'super' }],
+  [{ 'indent': '-1'}, { 'indent': '+1' }],
+
+  [{ 'color': [] }, { 'background': [] }],
+  [{ 'align': [] }],
+
+  ['clean']      
 ];
 
 const quill = new Quill("#editor-container", {
@@ -26,7 +38,6 @@ const quill = new Quill("#editor-container", {
 
 const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
 
-// Load theme from localStorage
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark");
   if (themeSwitch) themeSwitch.checked = true;
