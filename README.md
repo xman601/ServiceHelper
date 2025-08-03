@@ -15,14 +15,14 @@ ServiceHelper is a lightweight tool designed to assist you in writing **Comments
 
 ### Features:
 - **Rich Text Formatting**: Add **bold**, *italic*, <u>underline</u>, and [hyperlinks](#).
-- **Preview Mode**: Instantly preview your formatted output.
+- **Generate Mode**: Instantly generate your formatted output.
 - **Copy to Clipboard**: Quickly copy the formatted text for use in ServiceNow.
 - **Dark Mode**: Toggle between light and dark themes for better accessibility.
 
 ## 🛠️ Usage
 
 1. Write your comments in the editor.
-2. Click the **Preview** button to see the formatted output.
+2. Click the **Generate** button to see the formatted output.
 3. Use the **Copy** button to copy the formatted text.
 4. Paste the output directly into ServiceNow.
 

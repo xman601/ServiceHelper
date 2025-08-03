@@ -21,6 +21,18 @@ const quill = new Quill("#editor-container", {
   },
 });
 
+// Load saved content from localStorage
+const savedContent = localStorage.getItem("editorContent");
+if (savedContent) {
+  quill.root.innerHTML = savedContent;
+}
+
+// Save content to localStorage on text change
+quill.on("text-change", () => {
+  const content = quill.root.innerHTML;
+  localStorage.setItem("editorContent", content);
+});
+
 const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
 
 if (localStorage.getItem("theme") === "dark") {
