@@ -8,11 +8,11 @@
 
 ServiceHelper is designed to help you write Comments and Work Notes for ServiceNow.
 
-## Usage/Examples
+## Usage
 
-```
-Filler for now
-```
+<p>ServiceHelper is designed to assist you when writing <b>Comments</b> or <b>Work Notes</b> in ServiceNow.</p>
+<p>This application allows you to write comments with formatting options such as <b>Bold</b>, <i>Italic</i>, <u>Underline</u>, <a href="#" id="hyperlink">Hyperlinks</a>, and much more.</p>
+<p>To use this tool, simply write your comments in the text area below and click the <b>"Preview"</b> button. The formatted output will be displayed for you to copy and paste into ServiceNow.</p>
 
 ## Author
 
