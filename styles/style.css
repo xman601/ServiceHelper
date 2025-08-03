@@ -93,10 +93,15 @@ section {
     border: 1px solid #ccc;
 }
 
+.button-container {
+    display: flex;
+    gap: 1rem; /* Uniform spacing between buttons */
+    justify-content: center; /* Center the buttons horizontally */
+    margin-top: 1rem; /* Add spacing above the container */
+}
+
 .btn {
-    padding: .5rem 1rem;
-    color: white;
-    margin-top: 1rem;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 2rem;
     cursor: pointer;
@@ -111,10 +116,29 @@ section {
     cursor: pointer;
 }
 .preview-button {
-    background-color: #4e4e4e;
+    background-color: #0275d8;
+    color: white;
 }
 .copy-button {
     background-color: #4d904d;
+    color: white;
+}
+
+.copy-button:hover {
+    background-color: #3c763c;
+}
+
+.clear-button {
+    background-color: #d9534f;
+    color: white;
+}
+
+.clear-button:hover {
+    background-color: #c9302c;
+}
+
+.btn:hover {
+    opacity: 0.9; /* Slight hover effect for all buttons */
 }
 
 .output img {
@@ -176,18 +200,14 @@ body.dark .editor {
   border-color: #444;
 }
 
-body.dark .btn {
+/* body.dark .btn {
   background-color: #444 !important;
   color: #e0e0e0 !important;
-}
+} */
 
 body.dark .btn_toggle {
   background-color: #444 !important;
   color: #e0e0e0 !important;
-}
-
-body.dark .preview-button {
-  background-color: #666 !important;
 }
 
 body.dark .copy-button {

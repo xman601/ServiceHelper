@@ -3,6 +3,13 @@ const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
 const themeToggle = document.getElementById("theme-toggle");
 
+// Create and append the Clear button
+const clearBtn = document.createElement("button");
+clearBtn.className = "clear-button btn";
+clearBtn.id = "clear-button";
+clearBtn.textContent = "Clear";
+copyBtn.parentNode.insertBefore(clearBtn, copyBtn.nextSibling);
+
 const toolbarOptions = [
   [{ header: [1, 2, 3, false] }],
   ["bold", "italic", "underline"],
@@ -60,8 +67,13 @@ previewBtn.addEventListener("click", () => {
 });
 
 copyBtn.addEventListener("click", () => {
-  // Copy the text content of the output div to clipboard
-  const textToCopy = output.textContent;
+  let textToCopy;
+  if (output.textContent.trim() !== "") {
+    textToCopy = output.textContent;
+  } else {
+    textToCopy = `[code]${quill.root.innerHTML}[/code]`;
+  }
+
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
       copyBtn.textContent = "Copied!";
@@ -75,4 +87,15 @@ copyBtn.addEventListener("click", () => {
         copyBtn.textContent = "Copy";
       }, 1200);
     });
+});
+
+// Clear button functionality
+clearBtn.addEventListener("click", () => {
+  quill.root.innerHTML = ""; // Clear the editor content
+  output.textContent = ""; // Clear the output content
+  localStorage.removeItem("editorContent"); // Remove saved content from localStorage
+  clearBtn.textContent = "Cleared!";
+  setTimeout(() => {
+    clearBtn.textContent = "Clear";
+  }, 1200);
 });
