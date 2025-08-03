@@ -11,7 +11,7 @@
 
 ## 🚀 About
 
-ServiceHelper is a lightweight tool designed to assist you in writing **Comments** or **Work Notes** in ServiceNow with enhanced formatting options. 
+ServiceHelper is a lightweight tool designed to assist you in writing **Comments** or **Work Notes** in ServiceNow with enhanced formatting options. Check it out here [ServiceHelper](servicehelper.exobyte.app).
 
 ### Features:
 - **Rich Text Formatting**: Add **bold**, *italic*, <u>underline</u>, and [hyperlinks](#).
@@ -41,5 +41,4 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 
 ## 📧 Contact
 
-- **GitHub**: [ServiceHelper Repository](https://github.com/xman601/ServiceNowHelper)
-- **Website**: [Xavier Jimenez](https://xavierj.me)
+- **My Website**: [Xavier Jimenez](https://xavierj.me)
