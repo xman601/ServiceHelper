@@ -4,28 +4,13 @@ const copyBtn = document.querySelector("#copy-button");
 const themeToggle = document.getElementById("theme-toggle");
 
 const toolbarOptions = [
-  //   header options
-  [{ 'size': ['small', false, 'large', 'huge'] }],
   [{ header: [1, 2, 3, false] }],
-
-  // text utilities
   ["bold", "italic", "underline"],
-
-  // lists
   [{ list: "ordered" }, { list: "bullet" }],
-
-  // media
-  ["link"]
-  
-  // toggled buttons
-  ['blockquote', 'code-block'],
-
+  ["link"],
+  ['code-block'],
   [{ 'script': 'sub'}, { 'script': 'super' }],
-  [{ 'indent': '-1'}, { 'indent': '+1' }],
-
   [{ 'color': [] }, { 'background': [] }],
-  [{ 'align': [] }],
-
   ['clean']      
 ];
 
