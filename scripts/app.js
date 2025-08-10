@@ -3,7 +3,6 @@ const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
 const themeToggle = document.getElementById("theme-toggle");
 
-// Create and append the Clear button
 const clearBtn = document.createElement("button");
 clearBtn.className = "clear-button btn";
 clearBtn.id = "clear-button";
@@ -28,13 +27,11 @@ const quill = new Quill("#editor-container", {
   },
 });
 
-// Load saved content from localStorage
 const savedContent = localStorage.getItem("editorContent");
 if (savedContent) {
   quill.root.innerHTML = savedContent;
 }
 
-// Save content to localStorage on text change
 quill.on("text-change", () => {
   const content = quill.root.innerHTML;
   localStorage.setItem("editorContent", content);
@@ -59,6 +56,15 @@ if (themeSwitch) {
 }
 
 previewBtn.addEventListener("click", () => {
+  // Prevent preview if editor is empty (no user input)
+  const plainText = quill.getText().trim();
+  if (!plainText) {
+    previewBtn.textContent = "No input!";
+    setTimeout(() => {
+      previewBtn.textContent = "Generate";
+    }, 1200);
+    return;
+  }
   const content = quill.root.innerHTML;
   output.classList.add("active");
   setTimeout(() => {
@@ -89,11 +95,11 @@ copyBtn.addEventListener("click", () => {
     });
 });
 
-// Clear button functionality
 clearBtn.addEventListener("click", () => {
-  quill.root.innerHTML = ""; // Clear the editor content
-  output.textContent = ""; // Clear the output content
-  localStorage.removeItem("editorContent"); // Remove saved content from localStorage
+  quill.root.innerHTML = ""; 
+  output.textContent = "";
+  localStorage.removeItem("editorContent"); 
+  output.classList.remove("active");
   clearBtn.textContent = "Cleared!";
   setTimeout(() => {
     clearBtn.textContent = "Clear";
