@@ -84,7 +84,7 @@ section {
     width: 0%;
     max-width: 0%;
     padding: 1rem;
-    overflow: auto; /* Add this line */
+    overflow: auto;
 }
 
 .output.active {
@@ -95,9 +95,9 @@ section {
 
 .button-container {
     display: flex;
-    gap: 1rem; /* Uniform spacing between buttons */
-    justify-content: center; /* Center the buttons horizontally */
-    margin-top: 1rem; /* Add spacing above the container */
+    gap: 1rem; 
+    justify-content: center; 
+    margin-top: 1rem; 
 }
 
 .btn {
@@ -353,4 +353,137 @@ body.dark .ql-tooltip input {
 }
 body.dark .ql-tooltip a {
   color: #59ff67;
+}
+
+.history-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.dark .history-panel {
+  background: #2d2d2d;
+  color: #fff;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.close-history {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.dark .close-history {
+  color: #fff;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  margin-bottom: 10px;
+}
+
+.dark .history-item {
+  border-bottom-color: #444;
+}
+
+.history-content {
+  flex: 1;
+}
+
+.history-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #bd2130;
+}
+
+.clear-all-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.clear-all-btn:hover {
+  background: #bd2130;
+}
+
+.history-timestamp {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.dark .history-timestamp {
+  color: #aaa;
+}
+
+.history-preview {
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+.restore-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.restore-btn:hover {
+  background: #0056b3;
+}
+
+.no-history {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.dark .no-history {
+  color: #aaa;
+}
+
+.history-items {
+  margin-bottom: 10px;
 }
