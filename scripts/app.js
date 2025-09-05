@@ -1,7 +1,27 @@
 const previewBtn = document.querySelector("#preview-button");
 const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
-const themeToggle = document.getElementById("theme-toggle");
+const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
+
+// Check for a saved theme in localStorage and apply it on page load
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  if (themeSwitch) themeSwitch.checked = true;
+}
+
+// Add the event listener to handle clicks on the theme toggle
+if (themeSwitch) {
+  themeSwitch.addEventListener("change", () => {
+    // Toggle the .dark class on the body
+    document.body.classList.toggle("dark");
+    // Save the new theme preference to localStorage
+    if (document.body.classList.contains("dark")) {
+      localStorage.setItem("theme", "dark");
+    } else {
+      localStorage.setItem("theme", "light");
+    }
+  });
+}
 
 const clearBtn = document.createElement("button");
 clearBtn.className = "clear-button btn";
@@ -20,43 +40,90 @@ const toolbarOptions = [
   ['clean']      
 ];
 
-const quill = new Quill("#editor-container", {
+// Replace the existing quillConfig with this updated version
+const quillConfig = {
   theme: "snow",
   modules: {
     toolbar: toolbarOptions,
-  },
+    clipboard: {
+      matchVisual: false
+    },
+    keyboard: {
+      bindings: {
+        enter: {
+          key: 13,
+          handler: function(range, context) {
+            // Prevent default enter behavior on links
+            if (context.format.link) {
+              return true;
+            }
+            return true;
+          }
+        }
+      }
+    }
+  }
+};
+
+// Replace the existing Quill instantiation and add these event handlers
+const quill = new Quill("#editor-container", quillConfig);
+
+// Prevent link clicks in editor
+quill.root.addEventListener('click', function(event) {
+  if (event.target && event.target.tagName === 'A') {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
 });
 
-const savedContent = localStorage.getItem("editorContent");
-if (savedContent) {
-  quill.root.innerHTML = savedContent;
-}
+// Prevent link clicks in toolbar
+document.querySelector('.ql-toolbar').addEventListener('click', function(event) {
+  if (event.target && event.target.tagName === 'A') {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  }
+}, true);
 
-quill.on("text-change", () => {
-  const content = quill.root.innerHTML;
-  localStorage.setItem("editorContent", content);
-});
-
-const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
-
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
-  if (themeSwitch) themeSwitch.checked = true;
-}
-
-if (themeSwitch) {
-  themeSwitch.addEventListener("change", () => {
-    document.body.classList.toggle("dark");
-    if (document.body.classList.contains("dark")) {
-      localStorage.setItem("theme", "dark");
-    } else {
-      localStorage.setItem("theme", "light");
+// Add mutation observer to handle dynamically added links
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.addedNodes.length) {
+      mutation.addedNodes.forEach((node) => {
+        if (node.querySelectorAll) {
+          const links = node.querySelectorAll('a');
+          links.forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            });
+          });
+        }
+      });
     }
   });
-}
+});
 
+// Start observing the editor
+observer.observe(quill.root, {
+  childList: true,
+  subtree: true
+});
+
+// Add CSS to show links are not clickable
+const style = document.createElement('style');
+style.textContent = `
+  .ql-editor a {
+    pointer-events: none;
+    cursor: text;
+  }
+`;
+document.head.appendChild(style);
+
+// Update the preview button event listener to handle links better
 previewBtn.addEventListener("click", () => {
-  // Prevent preview if editor is empty (no user input)
   const plainText = quill.getText().trim();
   if (!plainText) {
     previewBtn.textContent = "No input!";
@@ -65,19 +132,47 @@ previewBtn.addEventListener("click", () => {
     }, 1200);
     return;
   }
+
   const content = quill.root.innerHTML;
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = content;
+  
+  // Process all anchor tags with improved link handling
+  const links = tempDiv.getElementsByTagName('a');
+  Array.from(links).forEach(link => {
+    const url = link.getAttribute('href') || '';
+    const text = link.textContent;
+    const bbCodeLink = `[url=${url}]${text}[/url]`;
+    const textNode = document.createTextNode(bbCodeLink);
+    link.parentNode.replaceChild(textNode, link);
+  });
+
   output.classList.add("active");
-  setTimeout(() => {
-    output.textContent = `[code]${content}[/code]`;
-  }, 10);
+  output.textContent = `[code]${tempDiv.innerHTML}[/code]`;
 });
 
+// Update the copy button event listener to preserve the BBCode links
 copyBtn.addEventListener("click", () => {
   let textToCopy;
   if (output.textContent.trim() !== "") {
     textToCopy = output.textContent;
   } else {
-    textToCopy = `[code]${quill.root.innerHTML}[/code]`;
+    // Convert HTML links to BBCode format for direct copying
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = quill.root.innerHTML;
+    
+    const links = tempDiv.getElementsByTagName('a');
+    for (let i = links.length - 1; i >= 0; i--) {
+      const link = links[i];
+      const url = link.getAttribute('href');
+      const text = link.textContent;
+      const bbCodeLink = `[url=${url}]${text}[/url]`;
+      
+      const textNode = document.createTextNode(bbCodeLink);
+      link.parentNode.replaceChild(textNode, link);
+    }
+    
+    textToCopy = `[code]${tempDiv.innerHTML}[/code]`;
   }
 
   navigator.clipboard.writeText(textToCopy)
@@ -113,6 +208,30 @@ historyBtn.id = "history-button";
 historyBtn.textContent = "History";
 clearBtn.parentNode.insertBefore(historyBtn, clearBtn.nextSibling);
 
+// Add these constants near the top of the file after other constants
+const DEFAULT_HISTORY_DAYS = 7;
+const historySettings = JSON.parse(localStorage.getItem("historySettings")) || {
+  retentionDays: DEFAULT_HISTORY_DAYS
+};
+
+// Add the settings button and panel after historyBtn creation
+const settingsBtn = document.createElement("button");
+settingsBtn.className = "settings-icon-btn";
+settingsBtn.id = "settings-button";
+settingsBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+    <path d="M 9.6679688 2 L 9.1757812 4.5234375 C 8.3550224 4.8338012 7.5961042 5.2674041 6.9296875 5.8144531 L 4.5058594 4.9785156 L 2.1738281 9.0214844 L 4.1132812 10.707031 C 4.0445153 11.128986 4 11.558619 4 12 C 4 12.441381 4.0445153 12.871014 4.1132812 13.292969 L 2.1738281 14.978516 L 4.5058594 19.021484 L 6.9296875 18.185547 C 7.5961042 18.732596 8.3550224 19.166199 9.1757812 19.476562 L 9.6679688 22 L 14.332031 22 L 14.824219 19.476562 C 15.644978 19.166199 16.403896 18.732596 17.070312 18.185547 L 19.494141 19.021484 L 21.826172 14.978516 L 19.886719 13.292969 C 19.955485 12.871014 20 12.441381 20 12 C 20 11.558619 19.955485 11.128986 19.886719 10.707031 L 21.826172 9.0214844 L 19.494141 4.9785156 L 17.070312 5.8144531 C 16.403896 5.2674041 15.644978 4.8338012 14.824219 4.5234375 L 14.332031 2 L 9.6679688 2 z M 12 8 C 14.209 8 16 9.791 16 12 C 16 14.209 14.209 16 12 16 C 9.791 16 8 14.209 8 12 C 8 9.791 9.791 8 12 8 z"/>
+</svg>`;
+
+// Find the theme toggle switch
+const themeToggle = document.querySelector('.toggle-switch');
+// Insert the settings button after the theme toggle
+themeToggle.parentNode.insertBefore(settingsBtn, themeToggle.nextSibling);
+
+const settingsPanel = document.createElement("div");
+settingsPanel.className = "settings-panel";
+settingsPanel.style.display = "none";
+document.body.appendChild(settingsPanel);
+
 // Modify the clear button event listener
 clearBtn.addEventListener("click", () => {
   if (quill.getText().trim()) {
@@ -127,6 +246,7 @@ clearBtn.addEventListener("click", () => {
     if (editorHistory.length > MAX_HISTORY_ITEMS) {
       editorHistory.pop();
     }
+    cleanupOldHistory(); // Add this line to clean up old entries
     localStorage.setItem("editorHistory", JSON.stringify(editorHistory));
   }
   
@@ -213,4 +333,62 @@ function updateHistoryPanel() {
   historyPanel.querySelector('.close-history').addEventListener('click', () => {
     historyPanel.style.display = "none";
   });
+}
+
+// Add settings button functionality
+settingsBtn.addEventListener("click", () => {
+  if (settingsPanel.style.display === "none") {
+    settingsPanel.style.display = "block";
+    updateSettingsPanel();
+  } else {
+    settingsPanel.style.display = "none";
+  }
+});
+
+function updateSettingsPanel() {
+  settingsPanel.innerHTML = `
+    <div class="settings-header">
+      <h3>Settings</h3>
+      <button class="close-settings">×</button>
+    </div>
+    <div class="settings-content">
+      <div class="setting-item">
+        <label for="retention-days">Keep history for (days):</label>
+        <input type="number" id="retention-days" min="1" max="365" 
+          value="${historySettings.retentionDays}">
+      </div>
+      <button class="save-settings-btn">Save Settings</button>
+    </div>
+  `;
+
+  // Add event listeners for settings
+  settingsPanel.querySelector('.close-settings').addEventListener('click', () => {
+    settingsPanel.style.display = "none";
+  });
+
+  settingsPanel.querySelector('.save-settings-btn').addEventListener('click', () => {
+    const days = parseInt(settingsPanel.querySelector('#retention-days').value);
+    if (days >= 1 && days <= 365) {
+      historySettings.retentionDays = days;
+      localStorage.setItem("historySettings", JSON.stringify(historySettings));
+      cleanupOldHistory();
+      settingsPanel.style.display = "none";
+      updateHistoryPanel();
+    } else {
+      alert("Please enter a number between 1 and 365 days");
+    }
+  });
+}
+
+// Add this function to clean up old history items
+function cleanupOldHistory() {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - historySettings.retentionDays);
+  
+  editorHistory = editorHistory.filter(item => {
+    const itemDate = new Date(item.timestamp);
+    return itemDate > cutoffDate;
+  });
+  
+  localStorage.setItem("editorHistory", JSON.stringify(editorHistory));
 }
