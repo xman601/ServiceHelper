@@ -538,7 +538,7 @@ body.dark .ql-tooltip a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgb(165, 165, 165);
+  background: var(--color-bg-white); 
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -619,4 +619,24 @@ body.dark .ql-tooltip a {
 /* Dark mode support */
 body.dark .settings-icon-btn svg {
     fill: white;
+}
+
+/* Dark mode for settings panel */
+body.dark .settings-panel {
+  background: var(--color-bg-dark-section);
+  color: var(--color-text-dark);
+}
+
+body.dark .setting-item input {
+  background: var(--color-bg-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+body.dark .close-settings {
+  color: var(--color-text-dark);
+}
+
+body.dark .save-settings-btn:hover {
+  background: var(--color-primary-dark);
 }
