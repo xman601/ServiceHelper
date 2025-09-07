@@ -133,46 +133,23 @@ previewBtn.addEventListener("click", () => {
     return;
   }
 
-  const content = quill.root.innerHTML;
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = content;
-  
-  // Process all anchor tags with improved link handling
-  const links = tempDiv.getElementsByTagName('a');
-  Array.from(links).forEach(link => {
-    const url = link.getAttribute('href') || '';
-    const text = link.textContent;
-    const bbCodeLink = `[url=${url}]${text}[/url]`;
-    const textNode = document.createTextNode(bbCodeLink);
-    link.parentNode.replaceChild(textNode, link);
-  });
-
+  let content = quill.root.innerHTML;
+  // Convert BBCode [url=...]...[/url] to HTML <a href="$1">$2</a>
+  content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
   output.classList.add("active");
-  output.textContent = `[code]${tempDiv.innerHTML}[/code]`;
+  output.textContent = `[code]${content}[/code]`;
 });
 
 // Update the copy button event listener to preserve the BBCode links
 copyBtn.addEventListener("click", () => {
   let textToCopy;
+  let content;
   if (output.textContent.trim() !== "") {
-    textToCopy = output.textContent;
+    content = output.textContent.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
+    textToCopy = content;
   } else {
-    // Convert HTML links to BBCode format for direct copying
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = quill.root.innerHTML;
-    
-    const links = tempDiv.getElementsByTagName('a');
-    for (let i = links.length - 1; i >= 0; i--) {
-      const link = links[i];
-      const url = link.getAttribute('href');
-      const text = link.textContent;
-      const bbCodeLink = `[url=${url}]${text}[/url]`;
-      
-      const textNode = document.createTextNode(bbCodeLink);
-      link.parentNode.replaceChild(textNode, link);
-    }
-    
-    textToCopy = `[code]${tempDiv.innerHTML}[/code]`;
+    content = quill.root.innerHTML.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
+    textToCopy = `[code]${content}[/code]`;
   }
 
   navigator.clipboard.writeText(textToCopy)
