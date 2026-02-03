@@ -23,6 +23,19 @@ if (themeSwitch) {
   });
 }
 
+// Settings button: toggle aria-pressed and small animation (placeholder)
+const settingsBtn = document.getElementById('settings-button');
+if (settingsBtn) {
+  settingsBtn.addEventListener('click', () => {
+    const pressed = settingsBtn.getAttribute('aria-pressed') === 'true';
+    settingsBtn.setAttribute('aria-pressed', String(!pressed));
+    // small animation feedback
+    settingsBtn.classList.add('animate');
+    setTimeout(() => settingsBtn.classList.remove('animate'), 260);
+    console.log('Settings button clicked (placeholder)');
+  });
+}
+
 const clearBtn = document.createElement("button");
 clearBtn.className = "clear-button btn";
 clearBtn.id = "clear-button";
