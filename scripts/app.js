@@ -2,6 +2,25 @@ const previewBtn = document.querySelector("#preview-button");
 const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
 const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
+const EDITOR_STORAGE_KEY = "editorContent";
+
+let editorPersistTimer;
+function persistEditorContent() {
+  try {
+    if (!quill.getText().trim()) {
+      localStorage.removeItem(EDITOR_STORAGE_KEY);
+    } else {
+      localStorage.setItem(EDITOR_STORAGE_KEY, JSON.stringify(quill.getContents()));
+    }
+  } catch (_) {
+    /* storage full or disabled */
+  }
+}
+
+function schedulePersistEditor() {
+  clearTimeout(editorPersistTimer);
+  editorPersistTimer = setTimeout(persistEditorContent, 300);
+}
 
 // Check for a saved theme in localStorage and apply it on page load
 if (localStorage.getItem("theme") === "dark") {
@@ -80,6 +99,24 @@ const quillConfig = {
 
 // Replace the existing Quill instantiation and add these event handlers
 const quill = new Quill("#editor-container", quillConfig);
+
+try {
+  const saved = localStorage.getItem(EDITOR_STORAGE_KEY);
+  if (saved) {
+    quill.setContents(JSON.parse(saved), Quill.sources.API);
+    quill.history.clear();
+  }
+} catch (_) {
+  localStorage.removeItem(EDITOR_STORAGE_KEY);
+}
+
+quill.on("text-change", schedulePersistEditor);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    clearTimeout(editorPersistTimer);
+    persistEditorContent();
+  }
+});
 
 // Prevent link clicks in editor
 quill.root.addEventListener('click', function(event) {
@@ -192,9 +229,10 @@ copyBtn.addEventListener("click", () => {
 });
 
 clearBtn.addEventListener("click", () => {
-  quill.root.innerHTML = ""; 
+  quill.setContents([], Quill.sources.USER);
+  quill.history.clear();
   output.textContent = "";
-  localStorage.removeItem("editorContent"); 
+  localStorage.removeItem(EDITOR_STORAGE_KEY);
   output.classList.remove("active");
   clearBtn.textContent = "Cleared!";
   setTimeout(() => {
