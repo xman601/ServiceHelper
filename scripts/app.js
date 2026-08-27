@@ -172,13 +172,11 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Convert Quill's <p> line breaks to <br> for ServiceNow output
-function paragraphsToBreaks(html) {
-  return html
-    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/gi, "<br>")   // empty paragraphs
-    .replace(/<\/p>\s*<p>/gi, "<br>")    // adjacent paragraphs
-    .replace(/<p>/gi, "")
-    .replace(/<\/p>/gi, "");
+// ServiceNow's rich text field renders <p> blocks reliably but often collapses
+// <br> line breaks, so swap any <br> Quill produces (e.g. from shift+enter)
+// for a paragraph break before the content is previewed or copied.
+function convertBreaksToParagraphs(html) {
+  return html.replace(/<br\s*\/?>/gi, "</p><p>");
 }
 
 // Update the preview button event listener to handle links better
@@ -192,8 +190,7 @@ previewBtn.addEventListener("click", () => {
     return;
   }
 
-  let content = quill.root.innerHTML;
-  content = paragraphsToBreaks(content);
+  let content = convertBreaksToParagraphs(quill.root.innerHTML);
   // Convert BBCode [url=...]...[/url] to HTML <a href="$1">$2</a>
   content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
   output.classList.add("active");
@@ -208,8 +205,7 @@ copyBtn.addEventListener("click", () => {
     content = output.textContent.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
     textToCopy = content;
   } else {
-    content = paragraphsToBreaks(quill.root.innerHTML);
-    content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
+    content = convertBreaksToParagraphs(quill.root.innerHTML).replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
     textToCopy = `[code]${content}[/code]`;
   }
 
