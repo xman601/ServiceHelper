@@ -163,26 +163,44 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ServiceNow's rich text field renders <p> blocks reliably but doesn't need
-// (or want) closing </p> tags or empty paragraphs from blank lines - browsers
-// auto-close <p> at the next block, so we drop the closing tags and skip any
-// paragraph that has no real content.
+// Quill gives every Enter press its own <p>, so a single Enter and a
+// deliberate blank line look identical in the toolbar output. The two are
+// distinguishable in the DOM though: a blank line (2+ Enters) leaves an
+// empty <p><br></p> placeholder behind, while a single Enter doesn't. We use
+// that to match plain-text conventions - a single Enter joins lines with
+// <br> (same paragraph, no gap), and a blank line starts a real new <p>
+// (also dropping the closing tag, since browsers auto-close <p> anyway).
 function convertBreaksToParagraphs(html) {
   const container = document.createElement("div");
   container.innerHTML = html;
 
   const parts = [];
+  let currentLines = null;
+
+  function flush() {
+    if (currentLines) parts.push(`<p>${currentLines.join("<br>")}`);
+    currentLines = null;
+  }
+
   container.childNodes.forEach((node) => {
-    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "P") {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    if (node.tagName === "P") {
       node.innerHTML.split(/<br\s*\/?>/gi).forEach((segment) => {
-        if (segment.replace(/&nbsp;/gi, "").trim()) {
-          parts.push(`<p>${segment}`);
+        if (!segment.replace(/&nbsp;/gi, "").trim()) {
+          flush();
+        } else if (currentLines) {
+          currentLines.push(segment);
+        } else {
+          currentLines = [segment];
         }
       });
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
+    } else {
+      flush();
       parts.push(node.outerHTML);
     }
   });
+  flush();
 
   return parts.join("");
 }
