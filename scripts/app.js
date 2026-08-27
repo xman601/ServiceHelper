@@ -172,11 +172,28 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ServiceNow's rich text field renders <p> blocks reliably but often collapses
-// <br> line breaks, so swap any <br> Quill produces (e.g. from shift+enter)
-// for a paragraph break before the content is previewed or copied.
+// ServiceNow's rich text field renders <p> blocks reliably but doesn't need
+// (or want) closing </p> tags or empty paragraphs from blank lines - browsers
+// auto-close <p> at the next block, so we drop the closing tags and skip any
+// paragraph that has no real content.
 function convertBreaksToParagraphs(html) {
-  return html.replace(/<br\s*\/?>/gi, "</p><p>");
+  const container = document.createElement("div");
+  container.innerHTML = html;
+
+  const parts = [];
+  container.childNodes.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "P") {
+      node.innerHTML.split(/<br\s*\/?>/gi).forEach((segment) => {
+        if (segment.replace(/&nbsp;/gi, "").trim()) {
+          parts.push(`<p>${segment}`);
+        }
+      });
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      parts.push(node.outerHTML);
+    }
+  });
+
+  return parts.join("");
 }
 
 // Update the preview button event listener to handle links better
