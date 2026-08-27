@@ -1,0 +1,12 @@
+{
+  "name": "ServiceHelper",
+  "short_name": "ServiceHelper",
+  "description": "Format ServiceNow comments and work notes with rich text, then copy ready-to-paste HTML.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#e9ecef",
+  "theme_color": "#4d904d",
+  "icons": [
+    { "src": "assets/favicon.png", "sizes": "any", "type": "image/png" }
+  ]
+}

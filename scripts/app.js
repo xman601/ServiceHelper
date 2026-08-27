@@ -3,6 +3,7 @@ const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
 const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
 const EDITOR_STORAGE_KEY = "editorContent";
+const hasEditor = Boolean(previewBtn && output && copyBtn && document.getElementById("editor-container"));
 
 let editorPersistTimer;
 function persistEditorContent() {
@@ -55,16 +56,21 @@ if (settingsBtn) {
   });
 }
 
+if (hasEditor) {
+
 const clearBtn = document.createElement("button");
 clearBtn.className = "clear-button btn";
 clearBtn.id = "clear-button";
 clearBtn.textContent = "Clear";
+clearBtn.setAttribute("aria-live", "polite");
+clearBtn.setAttribute("aria-atomic", "true");
 copyBtn.parentNode.insertBefore(clearBtn, copyBtn.nextSibling);
 
 const toolbarOptions = [
   [{ header: [1, 2, 3, false] }],
   ["bold", "italic", "underline"],
   [{ list: "ordered" }, { list: "bullet" }],
+  ["blockquote"],
   ["link"],
   ['code-block'],
   [{ 'script': 'sub'}, { 'script': 'super' }],
@@ -72,27 +78,12 @@ const toolbarOptions = [
   ['clean']      
 ];
 
-// Replace the existing quillConfig with this updated version
 const quillConfig = {
   theme: "snow",
   modules: {
     toolbar: toolbarOptions,
     clipboard: {
       matchVisual: false
-    },
-    keyboard: {
-      bindings: {
-        enter: {
-          key: 13,
-          handler: function(range, context) {
-            // Prevent default enter behavior on links
-            if (context.format.link) {
-              return true;
-            }
-            return true;
-          }
-        }
-      }
     }
   }
 };
@@ -172,16 +163,41 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Convert Quill's <p> line breaks to <br> for ServiceNow output
-function paragraphsToBreaks(html) {
-  return html
-    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/gi, "<br>")   // empty paragraphs
-    .replace(/<\/p>\s*<p>/gi, "<br>")    // adjacent paragraphs
-    .replace(/<p>/gi, "")
-    .replace(/<\/p>/gi, "");
+// ServiceNow's rich text field renders <p> blocks reliably but doesn't need
+// (or want) closing </p> tags or empty paragraphs from blank lines - browsers
+// auto-close <p> at the next block, so we drop the closing tags and skip any
+// paragraph that has no real content.
+function convertBreaksToParagraphs(html) {
+  const container = document.createElement("div");
+  container.innerHTML = html;
+
+  const parts = [];
+  container.childNodes.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "P") {
+      node.innerHTML.split(/<br\s*\/?>/gi).forEach((segment) => {
+        if (segment.replace(/&nbsp;/gi, "").trim()) {
+          parts.push(`<p>${segment}`);
+        }
+      });
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      parts.push(node.outerHTML);
+    }
+  });
+
+  return parts.join("");
 }
 
-// Update the preview button event listener to handle links better
+// A link typed without a scheme (e.g. "example.com") gets stored by Quill as
+// a relative href, which ServiceNow then resolves against its own origin
+// instead of the intended external site. Force a scheme onto anything that
+// doesn't already have one (or isn't an anchor/relative path).
+function normalizeLinkHrefs(html) {
+  return html.replace(/href="([^"]*)"/gi, (match, href) => {
+    if (/^([a-z][a-z0-9+.-]*:|#|\/)/i.test(href)) return match;
+    return `href="https://${href}"`;
+  });
+}
+
 previewBtn.addEventListener("click", () => {
   const plainText = quill.getText().trim();
   if (!plainText) {
@@ -192,26 +208,15 @@ previewBtn.addEventListener("click", () => {
     return;
   }
 
-  let content = quill.root.innerHTML;
-  content = paragraphsToBreaks(content);
-  // Convert BBCode [url=...]...[/url] to HTML <a href="$1">$2</a>
-  content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
+  const content = normalizeLinkHrefs(convertBreaksToParagraphs(quill.root.innerHTML));
   output.classList.add("active");
   output.textContent = `[code]${content}[/code]`;
 });
 
-// Update the copy button event listener to preserve the BBCode links
 copyBtn.addEventListener("click", () => {
-  let textToCopy;
-  let content;
-  if (output.textContent.trim() !== "") {
-    content = output.textContent.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
-    textToCopy = content;
-  } else {
-    content = paragraphsToBreaks(quill.root.innerHTML);
-    content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
-    textToCopy = `[code]${content}[/code]`;
-  }
+  const textToCopy = output.textContent.trim() !== ""
+    ? output.textContent
+    : `[code]${normalizeLinkHrefs(convertBreaksToParagraphs(quill.root.innerHTML))}[/code]`;
 
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
@@ -239,4 +244,6 @@ clearBtn.addEventListener("click", () => {
     clearBtn.textContent = "Clear";
   }, 1200);
 });
+
+}
 
