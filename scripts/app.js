@@ -3,6 +3,7 @@ const output = document.querySelector(".output");
 const copyBtn = document.querySelector("#copy-button");
 const themeSwitch = document.querySelector('#theme-toggle input[type="checkbox"]');
 const EDITOR_STORAGE_KEY = "editorContent";
+const hasEditor = Boolean(previewBtn && output && copyBtn && document.getElementById("editor-container"));
 
 let editorPersistTimer;
 function persistEditorContent() {
@@ -55,16 +56,21 @@ if (settingsBtn) {
   });
 }
 
+if (hasEditor) {
+
 const clearBtn = document.createElement("button");
 clearBtn.className = "clear-button btn";
 clearBtn.id = "clear-button";
 clearBtn.textContent = "Clear";
+clearBtn.setAttribute("aria-live", "polite");
+clearBtn.setAttribute("aria-atomic", "true");
 copyBtn.parentNode.insertBefore(clearBtn, copyBtn.nextSibling);
 
 const toolbarOptions = [
   [{ header: [1, 2, 3, false] }],
   ["bold", "italic", "underline"],
   [{ list: "ordered" }, { list: "bullet" }],
+  ["blockquote"],
   ["link"],
   ['code-block'],
   [{ 'script': 'sub'}, { 'script': 'super' }],
@@ -72,27 +78,12 @@ const toolbarOptions = [
   ['clean']      
 ];
 
-// Replace the existing quillConfig with this updated version
 const quillConfig = {
   theme: "snow",
   modules: {
     toolbar: toolbarOptions,
     clipboard: {
       matchVisual: false
-    },
-    keyboard: {
-      bindings: {
-        enter: {
-          key: 13,
-          handler: function(range, context) {
-            // Prevent default enter behavior on links
-            if (context.format.link) {
-              return true;
-            }
-            return true;
-          }
-        }
-      }
     }
   }
 };
@@ -196,7 +187,6 @@ function convertBreaksToParagraphs(html) {
   return parts.join("");
 }
 
-// Update the preview button event listener to handle links better
 previewBtn.addEventListener("click", () => {
   const plainText = quill.getText().trim();
   if (!plainText) {
@@ -207,24 +197,15 @@ previewBtn.addEventListener("click", () => {
     return;
   }
 
-  let content = convertBreaksToParagraphs(quill.root.innerHTML);
-  // Convert BBCode [url=...]...[/url] to HTML <a href="$1">$2</a>
-  content = content.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
+  const content = convertBreaksToParagraphs(quill.root.innerHTML);
   output.classList.add("active");
   output.textContent = `[code]${content}[/code]`;
 });
 
-// Update the copy button event listener to preserve the BBCode links
 copyBtn.addEventListener("click", () => {
-  let textToCopy;
-  let content;
-  if (output.textContent.trim() !== "") {
-    content = output.textContent.replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
-    textToCopy = content;
-  } else {
-    content = convertBreaksToParagraphs(quill.root.innerHTML).replace(/\[url=(.+?)\](.+?)\[\/url\]/gi, '<a href="$1">$2</a>');
-    textToCopy = `[code]${content}[/code]`;
-  }
+  const textToCopy = output.textContent.trim() !== ""
+    ? output.textContent
+    : `[code]${convertBreaksToParagraphs(quill.root.innerHTML)}[/code]`;
 
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
@@ -252,4 +233,6 @@ clearBtn.addEventListener("click", () => {
     clearBtn.textContent = "Clear";
   }, 1200);
 });
+
+}
 
