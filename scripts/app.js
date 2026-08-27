@@ -187,6 +187,17 @@ function convertBreaksToParagraphs(html) {
   return parts.join("");
 }
 
+// A link typed without a scheme (e.g. "example.com") gets stored by Quill as
+// a relative href, which ServiceNow then resolves against its own origin
+// instead of the intended external site. Force a scheme onto anything that
+// doesn't already have one (or isn't an anchor/relative path).
+function normalizeLinkHrefs(html) {
+  return html.replace(/href="([^"]*)"/gi, (match, href) => {
+    if (/^([a-z][a-z0-9+.-]*:|#|\/)/i.test(href)) return match;
+    return `href="https://${href}"`;
+  });
+}
+
 previewBtn.addEventListener("click", () => {
   const plainText = quill.getText().trim();
   if (!plainText) {
@@ -197,7 +208,7 @@ previewBtn.addEventListener("click", () => {
     return;
   }
 
-  const content = convertBreaksToParagraphs(quill.root.innerHTML);
+  const content = normalizeLinkHrefs(convertBreaksToParagraphs(quill.root.innerHTML));
   output.classList.add("active");
   output.textContent = `[code]${content}[/code]`;
 });
@@ -205,7 +216,7 @@ previewBtn.addEventListener("click", () => {
 copyBtn.addEventListener("click", () => {
   const textToCopy = output.textContent.trim() !== ""
     ? output.textContent
-    : `[code]${convertBreaksToParagraphs(quill.root.innerHTML)}[/code]`;
+    : `[code]${normalizeLinkHrefs(convertBreaksToParagraphs(quill.root.innerHTML))}[/code]`;
 
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
